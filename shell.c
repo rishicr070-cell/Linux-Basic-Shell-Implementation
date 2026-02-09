@@ -99,6 +99,13 @@ void cmd_history(char **args);
 void cmd_env(char **args);
 void cmd_sleep(char **args);
 
+// Custom commands (unique to our shell)
+void cmd_sysinfo(char **args);
+void cmd_tree(char **args);
+void cmd_calc(char **args);
+void cmd_reverse(char **args);
+void cmd_colortest(char **args);
+
 int main() {
   char input[MAX_LINE];
   char *args[MAX_ARGS];
@@ -165,19 +172,21 @@ void print_banner() {
   printf("%s", COLOR_CYAN);
   printf("╔════════════════════════════════════════════════════════════╗\n");
   printf("║                                                            ║\n");
-  printf("║        %s🚀 ENHANCED LINUX SHELL - 40 COMMANDS 🚀%s         ║\n",
+  printf("║        %s🚀 ENHANCED LINUX SHELL - 45 COMMANDS 🚀%s       ║\n",
          COLOR_YELLOW, COLOR_CYAN);
   printf("║                                                            ║\n");
-  printf("║              %sOS Project - 2nd Year Engineering%s            ║\n",
+  printf("║              %sOS Project - 2nd Year Engineering%s         ║\n",
          COLOR_GREEN, COLOR_CYAN);
-  printf("║              %sAuthor: Rishi (05501021)%s                    ║\n",
+  printf("║              %sTeam: Rishi C (1RV24IS100)%s                ║\n",
          COLOR_MAGENTA, COLOR_CYAN);
-  printf("║              %sDate: January 25, 2026%s                      ║\n",
+  printf("║              %sTeam: Nikhil K (1RV24IS080)%s               ║\n",
+         COLOR_MAGENTA, COLOR_CYAN);
+  printf("║              %sDate: January 25, 2026%s                    ║\n",
          COLOR_WHITE, COLOR_CYAN);
   printf("║                                                            ║\n");
-  printf("║        %sType 'help' to see all 40 available commands%s     ║\n",
+  printf("║        %sType 'help' to see all 45 available commands%s    ║\n",
          COLOR_YELLOW, COLOR_CYAN);
-  printf("║        %sType 'exit' to quit the shell%s                    ║\n",
+  printf("║        %sType 'exit' to quit the shell%s                   ║\n",
          COLOR_RED, COLOR_CYAN);
   printf("║                                                            ║\n");
   printf("╚════════════════════════════════════════════════════════════╝\n");
@@ -477,18 +486,61 @@ int handle_builtin(char **args) {
     printf("  %s•%s Background:       command &\n\n", COLOR_MAGENTA,
            COLOR_RESET);
 
+    printf("%s🎨 CUSTOM COMMANDS (Unique to Our Shell):%s\n", COLOR_YELLOW,
+           COLOR_RESET);
+    printf("  %s26.%s sysinfo            - Comprehensive system information\n",
+           COLOR_GREEN, COLOR_RESET);
+    printf("  %s27.%s tree [dir]         - Display directory tree structure\n",
+           COLOR_GREEN, COLOR_RESET);
+    printf("  %s28.%s calc [expr]        - Built-in calculator (e.g., calc 5 + "
+           "3)\n",
+           COLOR_GREEN, COLOR_RESET);
+    printf("  %s29.%s reverse [file]     - Reverse lines in a file\n",
+           COLOR_GREEN, COLOR_RESET);
+    printf("  %s30.%s colortest          - Test all available colors\n\n",
+           COLOR_GREEN, COLOR_RESET);
+
     printf("%s📚 EXAMPLES:%s\n", COLOR_YELLOW, COLOR_RESET);
     printf("  ls -l\n");
     printf("  cat file.txt\n");
     printf("  grep \"hello\" file.txt\n");
     printf("  ls > output.txt\n");
     printf("  ps aux | grep shell\n");
-    printf("  sleep 10 &\n\n");
+    printf("  sleep 10 &\n");
+    printf("  sysinfo\n");
+    printf("  tree .\n");
+    printf("  calc 10 * 5\n\n");
 
     return 1;
   }
 
-  // 26. exit command
+  // 26-30: Custom commands (unique to our shell)
+  if (strcmp(args[0], "sysinfo") == 0) {
+    cmd_sysinfo(args);
+    return 1;
+  }
+
+  if (strcmp(args[0], "tree") == 0) {
+    cmd_tree(args);
+    return 1;
+  }
+
+  if (strcmp(args[0], "calc") == 0) {
+    cmd_calc(args);
+    return 1;
+  }
+
+  if (strcmp(args[0], "reverse") == 0) {
+    cmd_reverse(args);
+    return 1;
+  }
+
+  if (strcmp(args[0], "colortest") == 0) {
+    cmd_colortest(args);
+    return 1;
+  }
+
+  // 31. exit command
   if (strcmp(args[0], "exit") == 0) {
     printf("%s\n╔════════════════════════════════════╗%s\n", COLOR_CYAN,
            COLOR_RESET);
@@ -900,6 +952,201 @@ void cmd_sleep(char **args) {
          COLOR_RESET);
   sleep(seconds);
   printf("%sDone!%s\n", COLOR_GREEN, COLOR_RESET);
+}
+
+// ============================================================================
+// CUSTOM COMMANDS (Unique to Our Shell)
+// ============================================================================
+
+// 1. sysinfo - Comprehensive system information
+void cmd_sysinfo(char **args) {
+  struct utsname sys_info;
+  time_t now = time(NULL);
+  char *time_str = ctime(&now);
+  time_str[strlen(time_str) - 1] = '\0';
+
+  printf("\n%s╔═══════════════════════════════════════════════════════╗%s\n",
+         COLOR_CYAN, COLOR_RESET);
+  printf("%s║           🖥️  COMPREHENSIVE SYSTEM INFORMATION        ║%s\n",
+         COLOR_CYAN, COLOR_RESET);
+  printf("%s╚═══════════════════════════════════════════════════════╝%s\n\n",
+         COLOR_CYAN, COLOR_RESET);
+
+  // System info
+  if (uname(&sys_info) == 0) {
+    printf("%s📌 Operating System:%s\n", COLOR_YELLOW, COLOR_RESET);
+    printf("   System:   %s%s%s\n", COLOR_GREEN, sys_info.sysname, COLOR_RESET);
+    printf("   Release:  %s%s%s\n", COLOR_GREEN, sys_info.release, COLOR_RESET);
+    printf("   Version:  %s%s%s\n", COLOR_GREEN, sys_info.version, COLOR_RESET);
+    printf("   Machine:  %s%s%s\n\n", COLOR_GREEN, sys_info.machine,
+           COLOR_RESET);
+  }
+
+  // User info
+  struct passwd *pw = getpwuid(getuid());
+  char hostname[256];
+  gethostname(hostname, sizeof(hostname));
+
+  printf("%s👤 User Information:%s\n", COLOR_YELLOW, COLOR_RESET);
+  printf("   Username: %s%s%s\n", COLOR_GREEN, pw ? pw->pw_name : "Unknown",
+         COLOR_RESET);
+  printf("   Hostname: %s%s%s\n", COLOR_GREEN, hostname, COLOR_RESET);
+  printf("   User ID:  %s%d%s\n\n", COLOR_GREEN, getuid(), COLOR_RESET);
+
+  // Current session
+  char cwd[1024];
+  getcwd(cwd, sizeof(cwd));
+  printf("%s📂 Current Session:%s\n", COLOR_YELLOW, COLOR_RESET);
+  printf("   Directory: %s%s%s\n", COLOR_GREEN, cwd, COLOR_RESET);
+  printf("   Shell PID: %s%d%s\n", COLOR_GREEN, getpid(), COLOR_RESET);
+  printf("   Time:      %s%s%s\n\n", COLOR_GREEN, time_str, COLOR_RESET);
+
+  // History stats
+  printf("%s📊 Shell Statistics:%s\n", COLOR_YELLOW, COLOR_RESET);
+  printf("   Commands in history: %s%d%s\n", COLOR_GREEN, history_count,
+         COLOR_RESET);
+  printf("   Background jobs:     %s%d%s\n\n", COLOR_GREEN, job_count,
+         COLOR_RESET);
+}
+
+// 2. tree - Display directory tree structure
+void cmd_tree(char **args) {
+  char *dir_path = args[1] ? args[1] : ".";
+  DIR *dir = opendir(dir_path);
+
+  if (dir == NULL) {
+    printf("%sError: Cannot open directory '%s'%s\n", COLOR_RED, dir_path,
+           COLOR_RESET);
+    return;
+  }
+
+  printf("\n%s%s%s\n", COLOR_CYAN, dir_path, COLOR_RESET);
+
+  struct dirent *entry;
+  int count = 0;
+
+  while ((entry = readdir(dir)) != NULL) {
+    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+      continue;
+    }
+
+    char full_path[1024];
+    snprintf(full_path, sizeof(full_path), "%s/%s", dir_path, entry->d_name);
+
+    struct stat file_stat;
+    stat(full_path, &file_stat);
+
+    if (S_ISDIR(file_stat.st_mode)) {
+      printf("├── %s%s/%s\n", COLOR_BLUE, entry->d_name, COLOR_RESET);
+    } else {
+      printf("├── %s\n", entry->d_name);
+    }
+    count++;
+  }
+
+  closedir(dir);
+  printf("\n%s%d items%s\n\n", COLOR_GREEN, count, COLOR_RESET);
+}
+
+// 3. calc - Built-in calculator
+void cmd_calc(char **args) {
+  if (args[1] == NULL || args[2] == NULL || args[3] == NULL) {
+    printf("%sUsage: calc [num1] [operator] [num2]%s\n", COLOR_RED,
+           COLOR_RESET);
+    printf("%sExample: calc 10 + 5%s\n", COLOR_YELLOW, COLOR_RESET);
+    printf("%sOperators: + - * / %% (modulo)%s\n\n", COLOR_YELLOW, COLOR_RESET);
+    return;
+  }
+
+  double num1 = atof(args[1]);
+  char *op = args[2];
+  double num2 = atof(args[3]);
+  double result = 0;
+  int valid = 1;
+
+  if (strcmp(op, "+") == 0) {
+    result = num1 + num2;
+  } else if (strcmp(op, "-") == 0) {
+    result = num1 - num2;
+  } else if (strcmp(op, "*") == 0 || strcmp(op, "x") == 0) {
+    result = num1 * num2;
+  } else if (strcmp(op, "/") == 0) {
+    if (num2 == 0) {
+      printf("%sError: Division by zero!%s\n", COLOR_RED, COLOR_RESET);
+      return;
+    }
+    result = num1 / num2;
+  } else if (strcmp(op, "%") == 0) {
+    result = (int)num1 % (int)num2;
+  } else {
+    printf("%sError: Invalid operator '%s'%s\n", COLOR_RED, op, COLOR_RESET);
+    valid = 0;
+  }
+
+  if (valid) {
+    printf("\n%s╔═══ Calculator Result ═══╗%s\n", COLOR_CYAN, COLOR_RESET);
+    printf("%s%.2f %s %.2f = %s%.2f%s\n", COLOR_YELLOW, num1, op, num2,
+           COLOR_GREEN, result, COLOR_RESET);
+    printf("%s╚═════════════════════════╝%s\n\n", COLOR_CYAN, COLOR_RESET);
+  }
+}
+
+// 4. reverse - Reverse lines in a file
+void cmd_reverse(char **args) {
+  if (args[1] == NULL) {
+    printf("%sUsage: reverse [file]%s\n", COLOR_RED, COLOR_RESET);
+    return;
+  }
+
+  FILE *fp = fopen(args[1], "r");
+  if (fp == NULL) {
+    printf("%sError: Cannot open file '%s'%s\n", COLOR_RED, args[1],
+           COLOR_RESET);
+    return;
+  }
+
+  char lines[1000][1024];
+  int line_count = 0;
+
+  while (fgets(lines[line_count], sizeof(lines[0]), fp) != NULL &&
+         line_count < 1000) {
+    line_count++;
+  }
+
+  fclose(fp);
+
+  printf("\n%s╔═══ Reversed File: %s ═══╗%s\n", COLOR_CYAN, args[1],
+         COLOR_RESET);
+  for (int i = line_count - 1; i >= 0; i--) {
+    printf("%s", lines[i]);
+  }
+  printf("%s╚═══════════════════════════════════╝%s\n\n", COLOR_CYAN,
+         COLOR_RESET);
+}
+
+// 5. colortest - Test all available colors
+void cmd_colortest(char **args) {
+  printf("\n%s╔═══════════════════════════════════════════════════╗%s\n",
+         COLOR_CYAN, COLOR_RESET);
+  printf("%s║           🎨 COLOR PALETTE TEST 🎨               ║%s\n",
+         COLOR_CYAN, COLOR_RESET);
+  printf("%s╚═══════════════════════════════════════════════════╝%s\n\n",
+         COLOR_CYAN, COLOR_RESET);
+
+  printf("%s■ RED%s     - Error messages and warnings\n", COLOR_RED,
+         COLOR_RESET);
+  printf("%s■ GREEN%s   - Success messages and confirmations\n", COLOR_GREEN,
+         COLOR_RESET);
+  printf("%s■ YELLOW%s  - Information and prompts\n", COLOR_YELLOW,
+         COLOR_RESET);
+  printf("%s■ BLUE%s    - Directories and headers\n", COLOR_BLUE, COLOR_RESET);
+  printf("%s■ MAGENTA%s - Special features and highlights\n", COLOR_MAGENTA,
+         COLOR_RESET);
+  printf("%s■ CYAN%s    - Borders and decorations\n", COLOR_CYAN, COLOR_RESET);
+  printf("%s■ WHITE%s   - Standard text\n", COLOR_WHITE, COLOR_RESET);
+  printf("%s■ BOLD%s    - Emphasis text\n\n", COLOR_BOLD, COLOR_RESET);
+
+  printf("%sAll colors working perfectly! ✓%s\n\n", COLOR_GREEN, COLOR_RESET);
 }
 
 // Execute external command
